@@ -55,6 +55,12 @@ public interface DescriptorBuilder {
    */
   void build(Result result) throws DescriptorBuildException;
 
+  /**
+   * Builds the descriptor and writes the XML to the given output stream.
+   * @param outputStream output stream that will receive the XML
+   * @throws DescriptorBuildException if an error occurs in building the
+   *    descriptor
+   */
   void buildToStream(OutputStream outputStream)
       throws DescriptorBuildException;
 

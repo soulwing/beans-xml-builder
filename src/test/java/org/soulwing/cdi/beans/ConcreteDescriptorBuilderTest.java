@@ -15,6 +15,7 @@ public class ConcreteDescriptorBuilderTest {
   @Test
   public void test() throws Exception {
     builder
+        .version(Version.V1_1)
         .discoveryMode(DiscoveryMode.ANNOTATED)
         .alternatives()
           .append(Integer.class)

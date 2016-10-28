@@ -4,16 +4,17 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.List;
-import javax.xml.XMLConstants;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
+import javax.xml.bind.Marshaller;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+
+import org.soulwing.cdi.beans.model.BeanClass;
+import org.soulwing.cdi.beans.model.BeanClassList;
+import org.soulwing.cdi.beans.model.Beans;
 
 /**
  * A concrete implementation of {@link DescriptorBuilder}.
@@ -31,7 +32,7 @@ class ConcreteDescriptorBuilder implements DescriptorBuilder {
   private final ConcreteInsertableBuilder interceptorsBuilder =
       new ConcreteInsertableBuilder(this);
 
-  private Version version = Version.V1_0;
+  private Version version = Version.V1_1;
   private DiscoveryMode discoveryMode = DiscoveryMode.ALL;
 
   @Override
@@ -84,23 +85,10 @@ class ConcreteDescriptorBuilder implements DescriptorBuilder {
   @Override
   public void build(Result result) throws DescriptorBuildException {
     try {
-      XMLStreamWriter writer =
-          XMLOutputFactory.newFactory().createXMLStreamWriter(result);
-      writer.setDefaultNamespace(version.namespaceUri);
-      writer.setPrefix("xsi", XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
-      writer.writeStartDocument();
-      writer.writeStartElement(version.namespaceUri, BeansXml.BEANS);
-      writer.writeDefaultNamespace(version.namespaceUri);
-      writer.writeNamespace("xsi", XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
-      writer.writeAttribute(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
-          "schemaLocation", version.namespaceUri + " " + version.schemaLocation);
-      writer.writeAttribute(BeansXml.DISCOVERY_MODE,
-          discoveryMode.name().toLowerCase());
-      writeClassList(BeansXml.ALTERNATIVES, alternativesBuilder.toList(), writer);
-      writeClassList(BeansXml.DECORATORS, decoratorsBuilder.toList(), writer);
-      writeClassList(BeansXml.INTERCEPTORS, interceptorsBuilder.toList(), writer);
-      writer.writeEndElement();
-      writer.writeEndDocument();
+      final Marshaller marshaller = Beans.createMarshaller();
+      marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION,
+          version.namespaceUri + " " + version.schemaLocation);
+      marshaller.marshal(buildBeans(), result);
     }
     catch (RuntimeException ex) {
       throw ex;
@@ -111,16 +99,34 @@ class ConcreteDescriptorBuilder implements DescriptorBuilder {
 
   }
 
-  private void writeClassList(String listElement, List<String> classNames,
-      XMLStreamWriter writer) throws XMLStreamException {
-    if (classNames.isEmpty()) return;
-    writer.writeStartElement(listElement);
+  private Beans buildBeans() {
+    Beans beans = new Beans();
+    beans.setDiscoveryMode(discoveryMode);
+    buildClassList(beans.getAlternatives(), alternativesBuilder.toList());
+    buildClassList(beans.getDecorators(), decoratorsBuilder.toList());
+    buildClassList(beans.getInterceptors(), interceptorsBuilder.toList());
+    return beans;
+  }
+
+  private void buildClassList(BeanClassList classList, List<String> classNames) {
     for (final String className : classNames) {
-      writer.writeStartElement(BeansXml.CLASS);
-      writer.writeCharacters(className);
-      writer.writeEndElement();
+      classList.addClass(className);
     }
-    writer.writeEndElement();
+  }
+
+  static ConcreteDescriptorBuilder fromBeans(Beans beans) {
+    ConcreteDescriptorBuilder builder = new ConcreteDescriptorBuilder();
+    builder.discoveryMode(beans.getDiscoveryMode());
+    for (final BeanClass beanClass : beans.getAlternatives().getClasses()) {
+      builder.alternatives().append(beanClass.getClassName());
+    }
+    for (final BeanClass beanClass : beans.getDecorators().getClasses()) {
+      builder.decorators().append(beanClass.getClassName());
+    }
+    for (final BeanClass beanClass : beans.getInterceptors().getClasses()) {
+      builder.interceptors().append(beanClass.getClassName());
+    }
+    return builder;
   }
 
 }
