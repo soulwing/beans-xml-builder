@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+  http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd"
+       bean-discovery-mode="annotated">
+
+  <alternatives>
+    <class>edu.vt.research.summit.denali.ft.support.JavaMailFileSessionProducer</class>
+    <class>edu.vt.research.summit.denali.ft.support.MockProposalFolderService</class>
+    <class>edu.vt.research.summit.denali.ft.support.MockLdapRoleGroupResolver</class>
+  </alternatives>
+
+  <decorators>
+    <class>edu.vt.research.summit.denali.service.ProposalStatusChangeValidationDecorator</class>
+    <class>edu.vt.research.summit.denali.service.auth.DiaryRepositoryAccessControlDecorator</class>
+    <class>edu.vt.research.summit.denali.service.auth.DocumentRepositoryAccessControlDecorator</class>
+    <class>edu.vt.research.summit.denali.web.rest.proposal.initiation.InitiateProposalValidationDecorator</class>
+    <class>edu.vt.research.summit.denali.web.rest.proposal.ProposalUpdaterAccessDecorator</class>
+    <class>edu.vt.research.summit.denali.web.rest.sponsor.SponsorValidationDecorator</class>
+    <class>edu.vt.research.summit.denali.repository.ProposalRepositoryDecorator</class>
+    <class>edu.vt.research.summit.denali.repository.ProposalQueryDecorator</class>
+  </decorators>
+
+  <interceptors>
+    <class>edu.vt.research.summit.persistence.ReadOnlyInterceptor</class>
+    <class>edu.vt.research.summit.denali.model.validation.ValidateModelInterceptor</class>
+  </interceptors>
+
+</beans>
