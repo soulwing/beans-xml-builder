@@ -38,6 +38,10 @@ class MutableList<T> {
     delegate.remove(element);
   }
 
+  void clear() {
+    delegate.clear();
+  }
+
   List<T> toList() {
     return Collections.unmodifiableList(delegate);
   }

@@ -62,6 +62,12 @@ class ConcreteInsertableBuilder implements InsertableBuilder {
   }
 
   @Override
+  public InsertableBuilder clear() {
+    list.clear();
+    return this;
+  }
+
+  @Override
   public DescriptorBuilder end() {
     return descriptorBuilder;
   }

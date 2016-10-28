@@ -40,6 +40,12 @@ class ConcreteAppendableBuilder implements AppendableBuilder {
   }
 
   @Override
+  public AppendableBuilder clear() {
+    list.clear();
+    return this;
+  }
+
+  @Override
   public DescriptorBuilder end() {
     return descriptorBuilder;
   }

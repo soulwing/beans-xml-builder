@@ -36,6 +36,12 @@ interface InsertableBuilder {
   InsertableBuilder remove(String beanClassName);
 
   /**
+   * Clears the list of bean classes.
+   * @return this builder
+   */
+  InsertableBuilder clear();
+
+  /**
    * Inserts a bean class before another bean class in the list.
    * <p>
    * If {@code otherBeanClass} is not found in the list, {@code beanClass}

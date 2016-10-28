@@ -36,6 +36,12 @@ interface AppendableBuilder {
   AppendableBuilder remove(String beanClassName);
 
   /**
+   * Clears the list of bean classes.
+   * @return this builder
+   */
+  AppendableBuilder clear();
+
+  /**
    * Return to descriptor builder.
    * @return descriptor builder
    */
