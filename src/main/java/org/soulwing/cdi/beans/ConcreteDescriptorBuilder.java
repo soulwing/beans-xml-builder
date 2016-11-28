@@ -12,6 +12,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.soulwing.cdi.beans.model.Alternative;
 import org.soulwing.cdi.beans.model.BeanClass;
 import org.soulwing.cdi.beans.model.BeanClassList;
 import org.soulwing.cdi.beans.model.Beans;
@@ -85,9 +86,7 @@ class ConcreteDescriptorBuilder implements DescriptorBuilder {
   @Override
   public void build(Result result) throws DescriptorBuildException {
     try {
-      final Marshaller marshaller = Beans.createMarshaller();
-      marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION,
-          version.namespaceUri + " " + version.schemaLocation);
+      final Marshaller marshaller = Beans.createMarshaller(version);
       marshaller.marshal(buildBeans(), result);
     }
     catch (RuntimeException ex) {
@@ -102,6 +101,9 @@ class ConcreteDescriptorBuilder implements DescriptorBuilder {
   private Beans buildBeans() {
     Beans beans = new Beans();
     beans.setDiscoveryMode(discoveryMode);
+    for (final Alternative alternative : alternativesBuilder.toList()) {
+
+    }
     buildClassList(beans.getAlternatives(), alternativesBuilder.toList());
     buildClassList(beans.getDecorators(), decoratorsBuilder.toList());
     buildClassList(beans.getInterceptors(), interceptorsBuilder.toList());

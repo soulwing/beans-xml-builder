@@ -13,13 +13,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.soulwing.cdi.beans.DiscoveryMode;
+import org.soulwing.cdi.beans.Version;
 
 /**
  * A JAXB model for beans.xml
  *
  * @author Carl Harris
  */
-@XmlRootElement(name = "beans", namespace = "http://xmlns.jcp.org/xml/ns/javaee")
+@XmlRootElement(name = "beans", namespace = XML.NAMESPACE)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Beans {
 
@@ -27,16 +28,16 @@ public class Beans {
 
   private static volatile JAXBContext jaxbContext;
 
-  @XmlAttribute(name = "bean-discovery-mode")
+  @XmlAttribute(name = XML.DISCOVERY_MODE)
   private String discoveryMode;
 
-  @XmlElement
-  private BeanClassList alternatives = new BeanClassList();
+  @XmlElement(name = XML.ALTERNATIVES)
+  private AlternativeList alternatives = new AlternativeList();
 
-  @XmlElement
+  @XmlElement(name = XML.DECORATORS)
   private BeanClassList decorators = new BeanClassList();
 
-  @XmlElement
+  @XmlElement(name = XML.INTERCEPTORS)
   private BeanClassList interceptors = new BeanClassList();
 
   public DiscoveryMode getDiscoveryMode() {
@@ -49,7 +50,7 @@ public class Beans {
         discoveryMode.name().toLowerCase() : null;
   }
 
-  public BeanClassList getAlternatives() {
+  public AlternativeList getAlternatives() {
     return alternatives;
   }
 
@@ -80,8 +81,13 @@ public class Beans {
     return getJaxbContext().createUnmarshaller();
   }
 
-  public static Marshaller createMarshaller() throws JAXBException {
-    return getJaxbContext().createMarshaller();
+  public static Marshaller createMarshaller(Version version)
+      throws JAXBException {
+    final Marshaller marshaller = getJaxbContext().createMarshaller();
+
+    marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION,
+        XML.NAMESPACE + " " + version.schemaLocation);
+    return marshaller;
   }
 
 }

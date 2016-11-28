@@ -15,6 +15,7 @@ public class BeanClass {
   @XmlValue
   private String className;
 
+  @SuppressWarnings("unused")
   public BeanClass() {
   }
 

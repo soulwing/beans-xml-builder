@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class BeanClassList {
 
-  @XmlElement(name = "class")
+  @XmlElement(name = XML.BEAN_CLASS)
   private List<BeanClass> classes = new ArrayList<>();
 
   public List<BeanClass> getClasses() {
