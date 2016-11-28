@@ -62,6 +62,12 @@ public class Beans {
     return interceptors;
   }
 
+  /**
+   * Creates a JAXB context for marshalling/unmarshalling a
+   * {@code beans.xml} descriptor.
+   * @return JAXB context
+   * @throws JAXBException
+   */
   public static JAXBContext getJaxbContext() throws JAXBException {
     if (jaxbContext == null) {
       lock.lock();
@@ -78,10 +84,21 @@ public class Beans {
     return jaxbContext;
   }
 
+  /**
+   * Creates an unmarshaller for a {@code beans.xml} descriptor.
+   * @return unmarshaller
+   * @throws JAXBException
+   */
   public static Unmarshaller createUnmarshaller() throws JAXBException {
     return getJaxbContext().createUnmarshaller();
   }
 
+  /**
+   * Creates an marshaller for a {@code beans.xml} descriptor.
+   * @param version XML descriptor version to produce
+   * @return marshaller
+   * @throws JAXBException
+   */
   public static Marshaller createMarshaller(Version version)
       throws JAXBException {
     final Marshaller marshaller = getJaxbContext().createMarshaller();

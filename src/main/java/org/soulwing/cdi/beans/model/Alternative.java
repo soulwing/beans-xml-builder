@@ -9,7 +9,8 @@ import javax.xml.bind.annotation.XmlType;
  *
  * @author Carl Harris
  */
-public abstract class Alternative extends org.soulwing.cdi.beans.model.BeanClass {
+public abstract class Alternative
+    extends org.soulwing.cdi.beans.model.BeanClass {
 
   public Alternative() {
   }
