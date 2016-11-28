@@ -1,18 +1,25 @@
 package org.soulwing.cdi.beans.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
- * TODO: DESCRIBE THE TYPE HERE
+ * A JAXB model for CDI alternatives. An alternative can be either a bean
+ * class or a stereotype.
  *
  * @author Carl Harris
  */
-public interface Alternative {
+public abstract class Alternative extends org.soulwing.cdi.beans.model.BeanClass {
+
+  public Alternative() {
+  }
+
+  public Alternative(String className) {
+    super(className);
+  }
 
   @XmlRootElement(name = XML.STEREOTYPE)
-  class Stereotype
-      extends org.soulwing.cdi.beans.model.BeanClass
-      implements Alternative {
+  public static class Stereotype extends Alternative {
 
     @SuppressWarnings("unused")
     public Stereotype() {
@@ -25,9 +32,8 @@ public interface Alternative {
   }
 
   @XmlRootElement(name = XML.BEAN_CLASS)
-  class BeanClass
-      extends org.soulwing.cdi.beans.model.BeanClass
-      implements Alternative {
+  @XmlType(name = "alternativeBeanClass")
+  public static class BeanClass extends Alternative {
 
     @SuppressWarnings("unused")
     public BeanClass() {

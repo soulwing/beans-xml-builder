@@ -13,6 +13,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.soulwing.cdi.beans.model.Alternative;
+import org.soulwing.cdi.beans.model.AlternativeList;
 import org.soulwing.cdi.beans.model.BeanClass;
 import org.soulwing.cdi.beans.model.BeanClassList;
 import org.soulwing.cdi.beans.model.Beans;
@@ -24,8 +25,8 @@ import org.soulwing.cdi.beans.model.Beans;
  */
 class ConcreteDescriptorBuilder implements DescriptorBuilder {
 
-  private final ConcreteAppendableBuilder alternativesBuilder =
-      new ConcreteAppendableBuilder(this);
+  private final ConcreteAlternativesBuilder alternativesBuilder =
+      new ConcreteAlternativesBuilder(this);
 
   private final ConcreteInsertableBuilder decoratorsBuilder =
       new ConcreteInsertableBuilder(this);
@@ -49,7 +50,7 @@ class ConcreteDescriptorBuilder implements DescriptorBuilder {
   }
 
   @Override
-  public AppendableBuilder alternatives() {
+  public AlternativesBuilder alternatives() {
     return alternativesBuilder;
   }
 
@@ -101,13 +102,19 @@ class ConcreteDescriptorBuilder implements DescriptorBuilder {
   private Beans buildBeans() {
     Beans beans = new Beans();
     beans.setDiscoveryMode(discoveryMode);
-    for (final Alternative alternative : alternativesBuilder.toList()) {
-
-    }
-    buildClassList(beans.getAlternatives(), alternativesBuilder.toList());
+    buildAlternatives(beans.getAlternatives());
     buildClassList(beans.getDecorators(), decoratorsBuilder.toList());
     buildClassList(beans.getInterceptors(), interceptorsBuilder.toList());
     return beans;
+  }
+
+  private void buildAlternatives(AlternativeList alternativeList) {
+    for (final String name : alternativesBuilder.classes().toList()) {
+      alternativeList.addClass(name);
+    }
+    for (final String name : alternativesBuilder.stereotypes().toList()) {
+      alternativeList.addStereotype(name);
+    }
   }
 
   private void buildClassList(BeanClassList classList, List<String> classNames) {
@@ -119,8 +126,19 @@ class ConcreteDescriptorBuilder implements DescriptorBuilder {
   static ConcreteDescriptorBuilder fromBeans(Beans beans) {
     ConcreteDescriptorBuilder builder = new ConcreteDescriptorBuilder();
     builder.discoveryMode(beans.getDiscoveryMode());
-    for (final BeanClass beanClass : beans.getAlternatives().getClasses()) {
-      builder.alternatives().append(beanClass.getClassName());
+    for (final Alternative alternative : beans.getAlternatives().getClasses()) {
+      if (alternative instanceof Alternative.BeanClass) {
+        builder.alternatives().classes()
+            .append(((Alternative.BeanClass) alternative).getClassName());
+      }
+      else if (alternative instanceof Alternative.Stereotype) {
+        builder.alternatives().stereotypes().append(
+            ((Alternative.Stereotype) alternative).getClassName());
+      }
+      else {
+        throw new IllegalArgumentException("unrecognized alternative type "
+            + alternative.getClass().getName());
+      }
     }
     for (final BeanClass beanClass : beans.getDecorators().getClasses()) {
       builder.decorators().append(beanClass.getClassName());

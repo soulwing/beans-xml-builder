@@ -3,6 +3,7 @@ package org.soulwing.cdi.beans;
 import java.io.InputStream;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 
 import org.soulwing.cdi.beans.model.Beans;
 
@@ -30,13 +31,7 @@ public class DescriptorBuilderFactory {
 
   public static DescriptorBuilder newBuilder(InputStream inputStream)
       throws DescriptorBuildException {
-    try {
-      return ConcreteDescriptorBuilder.fromBeans(
-          (Beans) Beans.createUnmarshaller().unmarshal(inputStream));
-    }
-    catch (JAXBException ex) {
-      throw new DescriptorBuildException(ex);
-    }
+    return newBuilder(new StreamSource(inputStream));
   }
 
 }

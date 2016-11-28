@@ -27,11 +27,11 @@ public interface DescriptorBuilder {
   DescriptorBuilder discoveryMode(DiscoveryMode discoveryMode);
 
   /**
-   * Gets a builder for the list of bean alternatives to be enabled in
+   * Gets a builder for the list of alternatives to be enabled in
    * the descriptor.
    * @return alternatives builder
    */
-  AppendableBuilder alternatives();
+  AlternativesBuilder alternatives();
 
   /**
    * Gets a builder for the list of bean decorators to be enabled in

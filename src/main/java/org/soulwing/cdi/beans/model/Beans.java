@@ -67,7 +67,8 @@ public class Beans {
       lock.lock();
       try {
         if (jaxbContext == null) {
-          jaxbContext = JAXBContext.newInstance(Beans.class);
+          jaxbContext = JAXBContext.newInstance(Beans.class,
+              Alternative.BeanClass.class, Alternative.Stereotype.class);
         }
       }
       finally {

@@ -1,7 +1,7 @@
 package org.soulwing.cdi.beans;
 
 /**
- * TODO: DESCRIBE THE TYPE HERE
+ * An enumeration of bean discovery modes for the XML descriptor.
  *
  * @author Carl Harris
  */
