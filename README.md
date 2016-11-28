@@ -27,7 +27,7 @@ DescriptorBuilder builder = DescriptorBuilderFactory.newBuilder(
 ```
 
 Use the methods of the builder to append, insert, or remove items from the
-from the descriptor.
+descriptor.
 
 ```
 builder
